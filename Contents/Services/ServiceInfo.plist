@@ -8,11 +8,11 @@
 			<dict>
 				<key>URLPatterns</key>
 				<array>
-					<string>http://([^.]+.)?tekthing.com/.+</string>
+					<string>https?:\/\/([^.]+\.)?tekthing\.com\/.+</string>
 				</array>
 				<key>TestURLs</key>
 				<array>
-					<string>http://www.tekthing.com/blog/2015/2/19/7n4u9wq60za3bmtzzevckpj8wm05bl</string>
+					<string>https://www.tekthing.com/blog/2015/2/19/7n4u9wq60za3bmtzzevckpj8wm05bl</string>
 				</array>
 			</dict>
 		</dict>
