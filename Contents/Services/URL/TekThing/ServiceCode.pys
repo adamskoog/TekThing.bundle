@@ -2,43 +2,45 @@ YT_START = 'embed/'
 YT_END = '?wmode'
 
 def MetadataObjectForURL(url):
-	# Request the URL
+
 	page = HTML.ElementFromURL(url)
- 
-	# Extract the details available directly form the page.
+
 	title = page.xpath("//head//meta[@property='og:title']")[0].get('content')
 	description = page.xpath("//head//meta[@name='description']")[0].get('content')
 	vidwrap = page.xpath("//div[@class='sqs-video-wrapper']")[0].get('data-html')
-	
+
 	return VideoClipObject(
 		title = title,
 		summary = description,
-		thumb = GetThumbUrl(vidwrap)) 
-		
+		thumb = GetThumbUrl(vidwrap)
+	)
+
 def MediaObjectsForURL(url):
-    return [
-        MediaObject(
-            video_codec = VideoCodec.H264,
-            audio_codec = AudioCodec.AAC,
+
+	return [
+		MediaObject(
+			video_codec = VideoCodec.H264,
+			audio_codec = AudioCodec.AAC,
 			audio_channels = 2,
-            container = Container.MP4,
-            parts = [PartObject(key=Callback(PlayVideo, url = url))]
-        )
-    ]
+			container = Container.MP4,
+			parts = [PartObject(key=Callback(PlayVideo, url = url))]
+		)
+	]
 
 def PlayVideo(url):
-	# Request the URL
+
 	page = HTML.ElementFromURL(url)
-	
+
 	# This finds the full link to the mp4 file via xpath
 	for link in page.xpath("//div[@class='body']//div[@class='sqs-block-content']//a"):
 		href = link.get('href')
 		Log.Debug('Url: ' + href)
-		
+
 		if 'mp4' in href:
 			return Redirect(href)
 
 def GetThumbUrl(vidwrap):
+
 	startIndex = vidwrap.find(YT_START) + len(YT_START)
 	endIndex = vidwrap.find(YT_END)
 	return 'http://img.youtube.com/vi/' + vidwrap[startIndex:endIndex] + '/0.jpg'

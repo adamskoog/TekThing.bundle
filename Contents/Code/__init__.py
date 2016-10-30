@@ -3,7 +3,7 @@
 PREFIX 	 = "/video/tekthing"
 NAME 	 = "TekThing Podcast"
 ART      = 'art-default.jpg'
-ICON     = 'icon-default.png'
+ICON     = 'icon-default.jpg'
 RSSFEED  = 'http://feeds.feedburner.com/tekthing'
 YT_START = 'embed/'
 YT_END = '?wmode'
@@ -27,7 +27,7 @@ def MainMenu():
 			title = item.xpath('./title/text()')[0]
 		except :
 			pass
-		thumb = Resource.ContentsOfURLWithFallback(url=GetThumbUrl(item), fallback=R(ICON))
+		thumb = Resource.ContentsOfURLWithFallback(url=GetThumbUrl(item), fallback=ICON)
 		url = GetVideoUrl(item)
 		
 		if url:
