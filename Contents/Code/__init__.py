@@ -19,31 +19,34 @@ def Start():
 # Setup main landing page
 @handler(PREFIX, NAME, thumb=ICON, art=ART)
 def MainMenu():
+
 	oc = ObjectContainer()
 	xml = XML.ElementFromURL(RSSFEED)
 
 	for item in xml.xpath('//item'):
-		try :
+
+		try:
 			title = item.xpath('./title/text()')[0]
-		except :
-			pass
+		except:
+			continue
+
 		thumb = Resource.ContentsOfURLWithFallback(url=GetThumbUrl(item), fallback=ICON)
 		url = GetVideoUrl(item)
-		
+
 		if url:
-			url = item.xpath('./link/text()')[0]	# Use page url, need tp pass to service to get summary on video page.
+			url = item.xpath('./link/text()')[0] # Use page url, need tp pass to service to get summary on video page.
 
 			oc.add(VideoClipObject(
 				url = url, 
 				title = title, 
 				thumb = thumb
-				)
-			)
-		
+			))
+
 	# Display empty ObjectContainer and write to log.
 	if len(oc) < 1:
 		Log.Debug('No items found in Feed')
-		return ObjectContainer(header="Empty", message="No Videos found for this Show right now.")     
+		return ObjectContainer(header="Empty", message="No Videos found for this Show right now.")
+
 	return oc
 
 # Unfortunately the episode summary is unreliable at best. Maybe after a few more
