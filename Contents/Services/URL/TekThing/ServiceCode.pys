@@ -1,6 +1,7 @@
 YT_START = 'embed/'
 YT_END = '?wmode'
 
+####################################################################################################
 def MetadataObjectForURL(url):
 
 	page = HTML.ElementFromURL(url)
@@ -15,6 +16,7 @@ def MetadataObjectForURL(url):
 		thumb = GetThumbUrl(vidwrap)
 	)
 
+####################################################################################################
 def MediaObjectsForURL(url):
 
 	return [
@@ -23,22 +25,26 @@ def MediaObjectsForURL(url):
 			audio_codec = AudioCodec.AAC,
 			audio_channels = 2,
 			container = Container.MP4,
-			parts = [PartObject(key=Callback(PlayVideo, url = url))]
+			parts = [
+				PartObject(key=Callback(PlayVideo, url=url))
+			]
 		)
 	]
 
-def PlayVideo(url):
+####################################################################################################
+@indirect
+def PlayVideo(url, **kwargs):
 
-	page = HTML.ElementFromURL(url)
+	html = HTML.ElementFromURL(url)
 
-	# This finds the full link to the mp4 file via xpath
-	for link in page.xpath("//div[@class='body']//div[@class='sqs-block-content']//a"):
-		href = link.get('href')
-		Log.Debug('Url: ' + href)
+	video_url = html.xpath('//div[@class="sqs-block-content"]//a[contains(@href, ".mp4")]/@href')
 
-		if 'mp4' in href:
-			return Redirect(href)
+	if len(video_url) < 1:
+		raise Ex.MediaNotAvailable
 
+	return IndirectResponse(VideoClipObject, key=video_url[0])
+
+####################################################################################################
 def GetThumbUrl(vidwrap):
 
 	startIndex = vidwrap.find(YT_START) + len(YT_START)
